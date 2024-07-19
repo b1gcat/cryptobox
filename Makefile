@@ -8,10 +8,9 @@ AppSuffix=
 
 ldFlag=-s -w -X main.Version=$(Version)  -X main.AppName=$(AppName) -X main.AppID=$(AppID)
 
-ifeq ($(OS),window)
-	AppSuffix=.exe
-endif
+all:win
+	go build -ldflags "$(ldFlag)" -o dist/$(AppName)$(AppSuffix)
 
-all:
-	go build -ldflags "$(ldFlag)" -o $(AppName)$(AppSuffix)
+win:
+	CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -ldflags "$(ldFlag)" -o dist/$(AppName).exe 
 	

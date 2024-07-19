@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os/exec"
 	"strings"
 
@@ -54,7 +55,7 @@ func makeHeadeFooter(info string) (header *fyne.Container, footer *fyne.Containe
 	title := widget.NewLabel(info)
 
 	header = container.NewCenter(title, layout.NewSpacer())
-	copyright := widget.NewLabel(AppName + " by b1gcat")
+	copyright := widget.NewLabel(fmt.Sprintf("%s-%s/by b1gcat", AppName, Version))
 	footer = container.NewCenter(layout.NewSpacer(), copyright)
 	return
 }
