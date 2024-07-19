@@ -15,7 +15,7 @@ import (
 
 func verifyCert(_ fyne.Window) {
 	w := appWin.NewWindow("verifyCert")
-	size := fyne.Size{Width: 500, Height: 150}
+	size := fyne.Size{Width: 500, Height: 500}
 
 	setIcon(w)
 

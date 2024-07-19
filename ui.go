@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -52,8 +53,8 @@ func ui(w fyne.Window) {
 func makeHeadeFooter(info string) (header *fyne.Container, footer *fyne.Container) {
 	title := widget.NewLabel(info)
 
-	header = container.NewCenter(title)
-	copyright := widget.NewLabel(AppName + " ALL Right Reserved")
-	footer = container.NewCenter(copyright)
+	header = container.NewCenter(title, layout.NewSpacer())
+	copyright := widget.NewLabel(AppName + " by b1gcat")
+	footer = container.NewCenter(layout.NewSpacer(), copyright)
 	return
 }
