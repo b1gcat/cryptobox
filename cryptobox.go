@@ -10,9 +10,10 @@ import (
 )
 
 var (
-	Version = "1.0"
-	AppName = "demo"
-	AppID   = "com.demo"
+	Version  = "1.0"
+	AppName  = "demo"
+	AppID    = "com.demo"
+	FullName = "Commercial Cryptography Testing"
 )
 
 var (
@@ -20,16 +21,8 @@ var (
 )
 
 func main() {
-	w := appWin.NewWindow(AppName)
-	ui(w)
-
-	//样式
-	w.Resize(fyne.Size{Width: 370, Height: 400})
-	//w居中显示
-	w.CenterOnScreen()
-	//循环运行
-	w.ShowAndRun()
-
+	runWelcome()
+	appWin.Run()
 }
 
 func setIcon(w fyne.Window) {

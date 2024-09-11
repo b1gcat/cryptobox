@@ -14,8 +14,8 @@ import (
 )
 
 func verifyCert(_ fyne.Window) {
-	w := appWin.NewWindow("verifyCert")
-	size := fyne.Size{Width: 500, Height: 500}
+	w := appWin.NewWindow("证书链验证")
+	size := fyne.Size{Width: 500, Height: 250}
 
 	setIcon(w)
 
@@ -26,7 +26,7 @@ func verifyCert(_ fyne.Window) {
 	var userCert, chainCert string
 	//
 	var certChainBtn *widget.Button
-	certChainBtn = widget.NewButton("证书链", func() {
+	certChainBtn = widget.NewButton("导入证书链(pem或p7b)", func() {
 		fd := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
 			if err != nil {
 				dialog.ShowError(err, w)
@@ -46,7 +46,7 @@ func verifyCert(_ fyne.Window) {
 	})
 
 	var userCertBtn *widget.Button
-	userCertBtn = widget.NewButton("用户证书", func() {
+	userCertBtn = widget.NewButton("导入用户证书(pem或der)", func() {
 		fd := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
 			if err != nil {
 				dialog.ShowError(err, w)
@@ -73,7 +73,7 @@ func verifyCert(_ fyne.Window) {
 		defer check.Enable()
 
 		if userCert == "" || chainCert == "" {
-			dialog.ShowError(fmt.Errorf("缺少用户证书或证书链"), w)
+			dialog.ShowError(fmt.Errorf("未导入用户证书或证书链"), w)
 		}
 		vp := verifyCertParam{
 			userCertFile:  userCert,
@@ -87,9 +87,9 @@ func verifyCert(_ fyne.Window) {
 	})
 
 	v3 := container.NewVBox(userCertBtn, certChainBtn, check)
-	v3Center := container.NewCenter(v3)
+	//v3Center := container.NewCenter(v3)
 
-	content := container.NewVBox(v3Center)
+	content := container.NewVBox(v3)
 	w.SetContent(content)
 }
 

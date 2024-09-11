@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"net/url"
 	"os/exec"
 	"strings"
 
@@ -12,8 +12,13 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func ui(w fyne.Window) {
-
+func ui() {
+	w := appWin.NewWindow(AppName)
+	//样式
+	w.Resize(fyne.Size{Width: 200, Height: 250})
+	//w居中显示
+	w.CenterOnScreen()
+	//循环运行
 	setIcon(w)
 	//环境检查
 	var ckEnv *widget.Button
@@ -42,20 +47,48 @@ func ui(w fyne.Window) {
 		verifyCert(w)
 	})
 
-	funcList := container.NewVBox(ckEnv, verifyCertBtn)
-	v3Center := container.NewCenter(funcList)
+	//证书校验
+	var verifyD *widget.Button
+	verifyD = widget.NewButton("SM2公钥验签", func() {
+		//初始化
+		verifyD.Disable()
+		defer verifyD.Enable()
+		verifyData(w)
+	})
 
-	header, footer := makeHeadeFooter(AppName)
+	//sm2随机数固定破解私钥
+	var crackSM2randomBtn *widget.Button
+	crackSM2randomBtn = widget.NewButton("SM2随机数固定破解", func() {
+		//初始化
+		crackSM2randomBtn.Disable()
+		defer crackSM2randomBtn.Enable()
+		verifySm2Random(w)
+	})
 
-	ctnt := container.NewVBox(header, v3Center, footer)
+	funcList := container.NewVBox(ckEnv, verifyCertBtn, verifyD, crackSM2randomBtn)
+
+	header, footer := makeHeadeFooter("🌟🌟🌟 " + FullName + " 🌟🌟🌟")
+
+	ctnt := container.NewVBox(header, funcList,
+		layout.NewSpacer(),
+		layout.NewSpacer(),
+		layout.NewSpacer(),
+		footer,
+		layout.NewSpacer())
 	w.SetContent(ctnt)
+	w.Show()
 }
 
 func makeHeadeFooter(info string) (header *fyne.Container, footer *fyne.Container) {
 	title := widget.NewLabel(info)
-
+	title.TextStyle = fyne.TextStyle{Bold: true, Underline: true, Monospace: true}
 	header = container.NewCenter(title, layout.NewSpacer())
-	copyright := widget.NewLabel(fmt.Sprintf("%s-%s/by b1gcat", AppName, Version))
-	footer = container.NewCenter(layout.NewSpacer(), copyright)
+
+	verLink, _ := url.Parse("https://github.com/b1gcat/cryptobox")
+	footer = container.NewHBox(
+		layout.NewSpacer(),
+		widget.NewHyperlink(AppName+"/"+Version, verLink),
+		layout.NewSpacer(),
+	)
 	return
 }
