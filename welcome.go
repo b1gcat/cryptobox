@@ -26,8 +26,6 @@ func runWelcome() {
 	})
 
 	content := container.NewVBox(
-		widget.NewLabelWithStyle("\n\n"+"Commercial Cryptography Testing",
-			fyne.TextAlignCenter, fyne.TextStyle{Bold: true, Underline: true, Monospace: true}),
 		logo,
 		login,
 		widget.NewLabelWithStyle("\n安正安全网络技术有限公司\n", fyne.TextAlignCenter, fyne.TextStyle{Italic: true}))

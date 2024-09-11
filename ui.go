@@ -26,7 +26,7 @@ func ui() {
 		//初始化
 		ckEnv.Disable()
 		defer ckEnv.Enable()
-		requireSoftware := []string{"hashid", "openssl"}
+		requireSoftware := []string{"openssl"}
 		for _, soft := range requireSoftware {
 			if _, err := exec.LookPath(soft); err != nil {
 				dialog.ShowError(err, w)
@@ -65,7 +65,16 @@ func ui() {
 		verifySm2Random(w)
 	})
 
-	funcList := container.NewVBox(ckEnv, verifyCertBtn, verifyD, crackSM2randomBtn)
+	//hash-identifier
+	var hashID *widget.Button
+	hashID = widget.NewButton("HASH识别", func() {
+		//初始化
+		hashID.Disable()
+		defer hashID.Enable()
+		verifyHashId(w)
+	})
+
+	funcList := container.NewVBox(ckEnv, verifyCertBtn, verifyD, crackSM2randomBtn, hashID)
 
 	header, footer := makeHeadeFooter("🌟🌟🌟 " + FullName + " 🌟🌟🌟")
 
