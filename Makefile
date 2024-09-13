@@ -7,9 +7,10 @@ AppID=com.azcp
 
 ldFlag=-s -w -X main.Version=$(Version)  -X main.AppName=$(AppName) -X main.AppID=$(AppID)
 
-all:win
-	go build -ldflags "$(ldFlag)" -o dist/$(AppName)
-
+all:win darwin
+	
+darwin:
+	CGO_ENABLED=1 go build -ldflags "$(ldFlag)" -o dist/$(AppName)
 win:
 	CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -ldflags "$(ldFlag)" -o dist/$(AppName).exe 
 	

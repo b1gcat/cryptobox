@@ -74,7 +74,26 @@ func ui() {
 		verifyHashId(w)
 	})
 
-	funcList := container.NewVBox(ckEnv, verifyCertBtn, verifyD, crackSM2randomBtn, hashID)
+	//Flow classify
+	var flowid *widget.Button
+	flowid = widget.NewButton("报文分析", func() {
+		//初始化
+		flowid.Disable()
+		defer flowid.Enable()
+		flowClassify(w)
+	})
+
+	//AI LLM
+	var aiChat *widget.Button
+	aiChat = widget.NewButton("AI Chat", func() {
+		//初始化
+		aiChat.Disable()
+		defer aiChat.Enable()
+		runAIChat(w)
+	})
+
+	funcList := container.NewVBox(ckEnv, verifyCertBtn, verifyD,
+		crackSM2randomBtn, hashID, flowid, aiChat)
 
 	header, footer := makeHeadeFooter("🌟🌟🌟 " + FullName + " 🌟🌟🌟")
 
