@@ -13,6 +13,7 @@ func GetServerHello(packet gopacket.Packet) *ServerHello {
 			hello = ServerHello{}
 			err   = hello.Unmarshal(t.LayerPayload())
 		)
+
 		if err == nil {
 			return &hello
 		}

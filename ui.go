@@ -85,7 +85,7 @@ func ui() {
 
 	//AI LLM
 	var aiChat *widget.Button
-	aiChat = widget.NewButton("AI Chat", func() {
+	aiChat = widget.NewButton("AI知识库", func() {
 		//初始化
 		aiChat.Disable()
 		defer aiChat.Enable()

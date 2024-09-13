@@ -6,7 +6,7 @@ type CipherSuite uint16
 
 func (cs CipherSuite) String() string {
 	if name, ok := CipherSuiteReg[cs]; ok {
-		return name
+		return fmt.Sprintf("安全套件:%v", name)
 	}
 	return fmt.Sprintf("%#v (unknown)", cs)
 }
