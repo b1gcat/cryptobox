@@ -1,8 +1,6 @@
 module github.com/b1gcat/cryptobox
 
-go 1.22.5
-
-toolchain go1.22.7
+go 1.22.7
 
 require (
 	fyne.io/fyne/v2 v2.5.0
@@ -21,7 +19,6 @@ require (
 	fyne.io/systray v1.11.0 // indirect
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/ConradIrwin/font v0.0.0-20210318200717-ce8d41cc0732 // indirect
-	github.com/akavel/rsrc v0.10.2 // indirect
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/flopp/go-findfont v0.1.0 // indirect
 	github.com/fredbi/uri v1.1.0 // indirect
