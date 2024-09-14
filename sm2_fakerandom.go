@@ -137,7 +137,7 @@ func (v *verifySm2RandomParam) crackPrivateKey(result *widget.Entry) {
 						big.NewInt(0).Sub(s1, s2)), n)),
 			big.NewInt(1)), n)
 
-	result.Append("(r1-r2) ≡ (e1-e2) mod n, 所以k值随机, 随机数存在问题")
+	result.Append("(r1-r2) ≡ (e1-e2) mod n, 所以k值不随机, 随机数存在问题")
 	result.Append(fmt.Sprintf(`
 	计算过程:
 	e1:0x%v

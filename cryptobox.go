@@ -1,10 +1,9 @@
 package main
 
 import (
-	"path/filepath"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/cmd/fyne_demo/data"
 
 	_ "github.com/lengzhao/font/autoload"
 )
@@ -21,13 +20,11 @@ var (
 )
 
 func main() {
+	appWin.SetIcon(data.FyneLogoTransparent)
 	runWelcome()
 	appWin.Run()
 }
 
 func setIcon(w fyne.Window) {
-	icon, err := fyne.LoadResourceFromPath(filepath.Join("resources", "crypto.png"))
-	if err == nil {
-		w.SetIcon(icon)
-	}
+	//w.SetIcon(resources.IconPng)
 }
