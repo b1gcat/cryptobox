@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"strconv"
 
 	"os"
@@ -18,9 +19,21 @@ import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
+	"golang.org/x/text/encoding/simplifiedchinese"
 
 	"github.com/go-kit/log"
 )
+
+func showErrEx(w fyne.Window, err error) {
+	if runtime.GOOS == "windows" {
+		errStr, err := simplifiedchinese.GB18030.NewDecoder().String(err.Error())
+		if err == nil {
+			dialog.ShowError(fmt.Errorf("%v", errStr), w)
+			return
+		}
+	}
+	dialog.ShowError(err, w)
+}
 
 // https://www.winpcap.org/install/
 func flowClassify(_ fyne.Window) {
@@ -54,7 +67,7 @@ func flowClassify(_ fyne.Window) {
 
 	devices, err := pcap.FindAllDevs()
 	if err != nil {
-		dialog.ShowError(err, w)
+		showErrEx(w, err)
 		return
 	}
 	dev := widget.NewSelectEntry([]string{})
@@ -93,7 +106,7 @@ func flowClassify(_ fyne.Window) {
 			result.Append(fmt.Sprintf("[+] %v: %v/%v<->%v\n",
 				r.Version, r.Cybersuite, r.Src, r.Dst))
 		}); err != nil {
-			dialog.ShowError(err, w)
+			showErrEx(w, err)
 		}
 
 	})
