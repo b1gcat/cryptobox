@@ -17,8 +17,6 @@ func verifyCert(_ fyne.Window) {
 	w := appWin.NewWindow("证书链验证")
 	size := fyne.Size{Width: 500, Height: 250}
 
-	setIcon(w)
-
 	w.Resize(size)
 	w.CenterOnScreen()
 	w.Show()

@@ -11,7 +11,6 @@ import (
 func runWelcome() {
 	w := appWin.NewWindow(AppName)
 	w.SetTitle(AppName)
-	setIcon(w)
 
 	logo := canvas.NewImageFromResource(resources.WelcomePng)
 	logo.FillMode = canvas.ImageFillContain

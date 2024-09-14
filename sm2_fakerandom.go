@@ -18,8 +18,6 @@ func verifySm2Random(_ fyne.Window) {
 	w := appWin.NewWindow("sm2随机数漏洞检查与破解d")
 	size := fyne.Size{Width: 600, Height: 500}
 
-	setIcon(w)
-
 	w.Resize(size)
 	w.CenterOnScreen()
 	w.Show()

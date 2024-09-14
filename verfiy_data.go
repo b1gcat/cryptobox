@@ -21,8 +21,6 @@ func verifyData(_ fyne.Window) {
 	w := appWin.NewWindow("SM2公钥验签名")
 	size := fyne.Size{Width: 600, Height: 250}
 
-	setIcon(w)
-
 	w.Resize(size)
 	w.CenterOnScreen()
 	w.Show()

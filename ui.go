@@ -19,7 +19,6 @@ func ui() {
 	//w居中显示
 	w.CenterOnScreen()
 	//循环运行
-	setIcon(w)
 	//环境检查
 	var ckEnv *widget.Button
 	ckEnv = widget.NewButton("环境校验", func() {
@@ -80,6 +79,7 @@ func ui() {
 		//初始化
 		flowid.Disable()
 		defer flowid.Enable()
+
 		flowClassify(w)
 	})
 
