@@ -41,19 +41,3 @@ func DecodeIkeHeader(b []byte) (h *IkeHeader, err error) {
 	}
 	return
 }
-
-func (h *IkeHeader) Encode() (b []byte) {
-	b = make([]byte, IKE_HEADER_LEN)
-	copy(b, h.SpiI[:])
-	copy(b[8:], h.SpiR[:])
-	packets.WriteB8(b, 16, uint8(h.NextPayload))
-	packets.WriteB8(b, 17, h.MajorVersion<<4|h.MinorVersion)
-	packets.WriteB8(b, 18, uint8(h.ExchangeType))
-	packets.WriteB8(b, 19, uint8(h.Flags))
-	packets.WriteB32(b, 20, h.MsgID)
-	packets.WriteB32(b, 24, h.MsgLength)
-	if PacketLog {
-		log.Printf("Ike Header: %+v to \n%s", *h, hex.Dump(b))
-	}
-	return
-}

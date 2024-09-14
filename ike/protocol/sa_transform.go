@@ -66,24 +66,6 @@ func decodeTransform(b []byte) (trans *SaTransform, used int, err error) {
 	return
 }
 
-func (trans *SaTransform) encode(isLast bool) (b []byte) {
-	b = make([]byte, MIN_LEN_TRANSFORM)
-	if !isLast {
-		packets.WriteB8(b, 0, 3)
-	}
-	packets.WriteB8(b, 4, uint8(trans.Transform.Type))
-	packets.WriteB16(b, 6, trans.Transform.TransformId)
-	if trans.KeyLength != 0 {
-		// TODO - taken a shortcut for attribute
-		attr := make([]byte, 4)
-		packets.WriteB16(attr, 0, 0x8000|14) // key length in bits
-		packets.WriteB16(attr, 2, trans.KeyLength)
-		b = append(b, attr...)
-	}
-	packets.WriteB16(b, 2, uint16(len(b)))
-	return
-}
-
 func (tr *SaTransform) IsEqual(other *SaTransform) bool {
 	if tr == nil || other == nil {
 		return false

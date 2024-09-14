@@ -114,22 +114,3 @@ func DecodePayloads(b []byte, nextPayload PayloadType) (*Payloads, error) {
 	}
 	return payloads, nil
 }
-
-func EncodePayloads(payloads *Payloads) (b []byte) {
-	for idx, pl := range payloads.Array {
-		body := pl.Encode()
-		hdr := pl.Header()
-		hdr.PayloadLength = uint16(len(body))
-		next := PayloadTypeNone
-		if idx < len(payloads.Array)-1 {
-			next = payloads.Array[idx+1].Type()
-		}
-		hdr.NextPayload = next
-		body = append(hdr.Encode(), body...)
-		if PacketLog {
-			log.Println("Payload %s: %s to:\n%s", pl.Type(), spew.Sdump(pl), hex.Dump(body))
-		}
-		b = append(b, body...)
-	}
-	return
-}

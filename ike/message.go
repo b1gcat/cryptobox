@@ -35,8 +35,7 @@ func (msg *Message) DecodePayloads(b []byte, nextPayload protocol.PayloadType, l
 	if protocol.PacketLog {
 		stdlog.Println("RX:" + spew.Sprintf("%#v", msg))
 	}
-	log.Log("RX", fmt.Sprintf("[%d] %s%s", msg.IkeHeader.MsgID, msg.IkeHeader.ExchangeType, msg.IkeHeader.Flags),
-		"payloads", *msg.Payloads)
+
 	return
 }
 

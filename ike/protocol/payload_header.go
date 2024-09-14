@@ -17,16 +17,6 @@ func (h *PayloadHeader) Header() *PayloadHeader {
 	return h
 }
 
-func (h PayloadHeader) Encode() (b []byte) {
-	b = make([]byte, PAYLOAD_HEADER_LENGTH)
-	packets.WriteB8(b, 0, uint8(h.NextPayload))
-	packets.WriteB16(b, 2, h.PayloadLength+PAYLOAD_HEADER_LENGTH)
-	if PacketLog {
-		log.Printf("Payload Header: %+v to \n%s", h, hex.Dump(b))
-	}
-	return
-}
-
 func (h *PayloadHeader) Decode(b []byte) error {
 	if len(b) < 4 {
 		return errors.Wrap(ERR_INVALID_SYNTAX, fmt.Sprintf("Packet Too short : %d", len(b)))

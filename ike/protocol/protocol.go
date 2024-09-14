@@ -274,7 +274,6 @@ type IkeHeader struct {
 type Payload interface {
 	Type() PayloadType
 	Decode([]byte) error
-	Encode() []byte
 	NextPayloadType() PayloadType
 	Header() *PayloadHeader
 }

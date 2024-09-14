@@ -81,21 +81,3 @@ func decodeProposal(b []byte) (prop *SaProposal, used int, err error) {
 	used = int(propLength)
 	return
 }
-
-func (prop *SaProposal) encode(number int, isLast bool) (b []byte) {
-	b = make([]byte, MIN_LEN_PROPOSAL)
-	if !isLast {
-		packets.WriteB8(b, 0, 2)
-	}
-	packets.WriteB8(b, 4, prop.Number)
-	packets.WriteB8(b, 5, uint8(prop.ProtocolID))
-	packets.WriteB8(b, 6, uint8(len(prop.Spi)))
-	packets.WriteB8(b, 7, uint8(len(prop.Transforms)))
-	b = append(b, prop.Spi...)
-	for idx, tr := range prop.Transforms {
-		isLast := idx == len(prop.Transforms)-1
-		b = append(b, tr.encode(isLast)...)
-	}
-	packets.WriteB16(b, 2, uint16(len(b)))
-	return
-}
