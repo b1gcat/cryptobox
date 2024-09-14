@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"strconv"
+
+	"os"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -10,10 +12,14 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
+	"github.com/b1gcat/cryptobox/ike"
+	"github.com/b1gcat/cryptobox/ike/protocol"
 	"github.com/b1gcat/cryptobox/tlsx"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
+
+	"github.com/go-kit/log"
 )
 
 // https://www.winpcap.org/install/
@@ -50,7 +56,8 @@ func flowClassify(_ fyne.Window) {
 
 	devices, err := pcap.FindAllDevs()
 	if err != nil {
-		log.Fatal(err)
+		dialog.ShowError(err, w)
+		return
 	}
 	dev := widget.NewSelectEntry([]string{})
 	v4 := container.NewBorder(layout.NewSpacer(), layout.NewSpacer(),
@@ -127,7 +134,8 @@ func handleFlowClassify(pcapFile string, cb func(*flowResult)) error {
 			continue
 		}
 
-		if packet.TransportLayer().LayerType() == layers.LayerTypeTCP {
+		switch packet.TransportLayer().LayerType() {
+		case layers.LayerTypeTCP:
 			sh := tlsx.GetServerHello(packet)
 			if sh == nil {
 				continue
@@ -145,7 +153,65 @@ func handleFlowClassify(pcapFile string, cb func(*flowResult)) error {
 				Dst: packet.NetworkLayer().NetworkFlow().Reverse().Dst().String() + ":" +
 					packet.TransportLayer().TransportFlow().Reverse().Dst().String(),
 			})
+		case layers.LayerTypeUDP:
+			if packet.TransportLayer().TransportFlow().Dst().String() == "4500" ||
+				packet.TransportLayer().TransportFlow().Dst().String() == "500" ||
+				packet.TransportLayer().TransportFlow().Src().String() == "4500" ||
+				packet.TransportLayer().TransportFlow().Src().String() == "500" {
+				t, _ := packet.Layer(layers.LayerTypeUDP).(*layers.UDP)
+
+				asymmetric := "?"
+				hash := "?"
+				enc := "?"
+				authMethold := "?"
+				isakmp, err := ike.DecodeMessage(t.LayerPayload(),
+					log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr)))
+				if err == nil {
+					sa := isakmp.Payloads.Get(protocol.PayloadTypeSA).(*protocol.SaPayload)
+
+					for _, prop := range sa.Proposals {
+						for _, tr := range prop.Transforms {
+							if tr.Atrrs != nil {
+								for _, attr := range tr.Atrrs {
+									switch attr.Type {
+									case 20:
+										asymmetric = strconv.Itoa(int(attr.Value))
+										if attr.Value == 2 {
+											asymmetric = "SM2"
+										}
+									case 2:
+										hash = strconv.Itoa(int(attr.Value))
+										if attr.Value == 20 {
+											hash = "SM3"
+										}
+									case 1:
+										enc = strconv.Itoa(int(attr.Value))
+										if attr.Value == 129 {
+											enc = "SM4"
+										}
+									case 3:
+										authMethold = strconv.Itoa(int(attr.Value))
+										if attr.Value == 10 {
+											authMethold = "公钥数字信封"
+										}
+									}
+								}
+							}
+						}
+					}
+					cb(&flowResult{
+						Version: "IPsec",
+						Cybersuite: fmt.Sprintf("%v-%v-%v-%v",
+							asymmetric, hash, enc, authMethold),
+						Src: packet.NetworkLayer().NetworkFlow().Reverse().Src().String() + ":" +
+							packet.TransportLayer().TransportFlow().Reverse().Src().String(),
+						Dst: packet.NetworkLayer().NetworkFlow().Reverse().Dst().String() + ":" +
+							packet.TransportLayer().TransportFlow().Reverse().Dst().String(),
+					})
+				}
+			}
 		}
+
 	}
 	return nil
 }

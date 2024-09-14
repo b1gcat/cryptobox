@@ -6,10 +6,13 @@ toolchain go1.22.7
 
 require (
 	fyne.io/fyne/v2 v2.5.0
+	github.com/davecgh/go-spew v1.1.1
 	github.com/emmansun/gmsm v0.27.4
+	github.com/go-kit/log v0.2.0
 	github.com/google/gopacket v1.1.19
 	github.com/lengzhao/font v0.1.0
 	github.com/ollama/ollama v0.3.10
+	github.com/pkg/errors v0.9.1
 	golang.org/x/crypto v0.27.0
 )
 
@@ -18,7 +21,6 @@ require (
 	fyne.io/systray v1.11.0 // indirect
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/ConradIrwin/font v0.0.0-20210318200717-ce8d41cc0732 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/flopp/go-findfont v0.1.0 // indirect
 	github.com/fredbi/uri v1.1.0 // indirect
@@ -28,6 +30,7 @@ require (
 	github.com/fyne-io/image v0.0.0-20220602074514-4956b0afb3d2 // indirect
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6 // indirect
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20240506104042-037f3cc74f2a // indirect
+	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-text/render v0.1.0 // indirect
 	github.com/go-text/typesetting v0.1.0 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
