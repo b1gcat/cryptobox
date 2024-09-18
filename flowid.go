@@ -127,8 +127,8 @@ func handleFlowClassify(pcapFile string, cb func(*flowResult)) error {
 	var handle *pcap.Handle
 	var err error
 
-	if pcapFile == "any" {
-		handle, err = pcap.OpenLive("en0", 1600, true, pcap.BlockForever)
+	if _, err = os.Stat(pcapFile); err != nil {
+		handle, err = pcap.OpenLive(pcapFile, 1600, true, pcap.BlockForever)
 	} else {
 		handle, err = pcap.OpenOffline(pcapFile)
 	}
