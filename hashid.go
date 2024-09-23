@@ -30,7 +30,7 @@ func verifyHashId(_ fyne.Window) {
 	//
 	var verify *widget.Button
 	verify = widget.NewButton("开始识别", func() {
-
+		result.SetText("")
 		verify.Disable()
 		defer verify.Enable()
 		pub.Text = strings.TrimSpace(pub.Text)

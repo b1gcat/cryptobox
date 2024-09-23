@@ -67,6 +67,7 @@ func verifySm2Random(_ fyne.Window) {
 
 		crackKey.Disable()
 		defer crackKey.Enable()
+		result.SetText("")
 
 		param := verifySm2RandomParam{
 			r1: strings.TrimSpace(r1.Text),

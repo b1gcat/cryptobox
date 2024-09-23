@@ -28,6 +28,7 @@ func decodeProposal(b []byte) (prop *SaProposal, used int, err error) {
 		err = errors.Wrap(ERR_INVALID_SYNTAX, fmt.Sprintf("proposal too small %d < %d", len(b), MIN_LEN_PROPOSAL))
 		return
 	}
+
 	prop = &SaProposal{}
 	if last, _ := packets.ReadB8(b, 0); last == 0 {
 		prop.IsLast = true

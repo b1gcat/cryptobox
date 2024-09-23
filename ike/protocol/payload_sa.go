@@ -1,6 +1,8 @@
 package protocol
 
-import "github.com/pkg/errors"
+import (
+	"github.com/pkg/errors"
+)
 
 // SA payload
 
@@ -9,6 +11,7 @@ func (s *SaPayload) Type() PayloadType {
 }
 
 func (s *SaPayload) Decode(b []byte) (err error) {
+
 	// Header has already been decoded
 	for len(b) > 0 {
 		prop, used, errP := decodeProposal(b)

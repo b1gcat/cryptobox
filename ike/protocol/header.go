@@ -17,10 +17,12 @@ func DecodeIkeHeader(b []byte) (h *IkeHeader, err error) {
 	if len(b) > MAX_IKE_MESSAGE_LEN {
 		return nil, errors.Wrap(ERR_INVALID_SYNTAX, fmt.Sprintf("Packet Too large : %d", len(b)))
 	}
+
 	h.SpiI = append([]byte{}, b[:8]...)
 	h.SpiR = append([]byte{}, b[8:16]...)
 	pt, _ := packets.ReadB8(b, 16)
 	h.NextPayload = PayloadType(pt)
+
 	ver, _ := packets.ReadB8(b, 16+1)
 	h.MajorVersion = ver >> 4
 	h.MinorVersion = ver & 0x0f

@@ -17,6 +17,7 @@ import (
 	"github.com/b1gcat/cryptobox/ike/protocol"
 	"github.com/b1gcat/cryptobox/tlsx"
 	"github.com/google/gopacket"
+	"github.com/google/gopacket/ip4defrag"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
 	"golang.org/x/text/encoding/simplifiedchinese"
@@ -98,6 +99,7 @@ func flowClassify(_ fyne.Window) {
 
 	var analysis *widget.Button
 	analysis = widget.NewButton("分析", func() {
+		result.SetText("")
 
 		analysis.Disable()
 		defer analysis.Enable()
@@ -137,11 +139,51 @@ func handleFlowClassify(pcapFile string, cb func(*flowResult)) error {
 	}
 
 	packetSource := gopacket.NewPacketSource(handle, handle.LinkType()).Packets()
+	defrag := ip4defrag.NewIPv4Defragmenter()
 
 	for packet := range packetSource {
-		if packet.ApplicationLayer() == nil ||
-			packet.NetworkLayer() == nil ||
-			packet.TransportLayer() == nil {
+		if packet.NetworkLayer() == nil ||
+			packet.NetworkLayer().LayerType() != layers.LayerTypeIPv4 {
+			continue
+		}
+
+		v4 := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
+
+		v4out, err := defrag.DefragIPv4(v4)
+		if err != nil || v4out == nil {
+
+			continue
+		}
+
+		if v4out != v4 {
+			ip4 := layers.IPv4{}
+			err = ip4.DecodeFromBytes(v4.Contents, gopacket.NilDecodeFeedback)
+			if err != nil {
+				fmt.Println("ip4.DecodeFromBytes.error:", err.Error())
+				continue
+			}
+
+			ip4.Length = uint16(len(v4.Contents) + len(v4out.LayerPayload()))
+			ip4.Flags = 2
+			ip4.FragOffset = 0
+			buffer := gopacket.NewSerializeBuffer()
+			err := ip4.SerializeTo(buffer, gopacket.SerializeOptions{
+				FixLengths:       false,
+				ComputeChecksums: true,
+			})
+			if err != nil {
+				fmt.Println("ip4.SerializeTo.error:", err.Error())
+				continue
+			}
+
+			ipWhole := append(buffer.Bytes(), v4out.LayerPayload()...)
+			packet = gopacket.NewPacket(ipWhole,
+				layers.LayerTypeIPv4, gopacket.DecodeOptions{NoCopy: true, Lazy: false})
+		} else {
+
+		}
+
+		if packet.TransportLayer() == nil {
 			continue
 		}
 
@@ -164,6 +206,7 @@ func handleFlowClassify(pcapFile string, cb func(*flowResult)) error {
 				Dst: packet.NetworkLayer().NetworkFlow().Reverse().Dst().String() + ":" +
 					packet.TransportLayer().TransportFlow().Reverse().Dst().String(),
 			})
+
 		case layers.LayerTypeUDP:
 			if packet.TransportLayer().TransportFlow().Dst().String() == "4500" ||
 				packet.TransportLayer().TransportFlow().Dst().String() == "500" ||
@@ -177,6 +220,7 @@ func handleFlowClassify(pcapFile string, cb func(*flowResult)) error {
 				authMethold := "?"
 				isakmp, err := ike.DecodeMessage(t.LayerPayload(),
 					log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr)))
+
 				if err == nil {
 					sa := isakmp.Payloads.Get(protocol.PayloadTypeSA).(*protocol.SaPayload)
 

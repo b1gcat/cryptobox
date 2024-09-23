@@ -73,8 +73,10 @@ func DecodePayloads(b []byte, nextPayload PayloadType) (*Payloads, error) {
 		if err := pHeader.Decode(b[:PAYLOAD_HEADER_LENGTH]); err != nil {
 			return nil, err
 		}
+
 		if (len(b) < int(pHeader.PayloadLength)) ||
 			(int(pHeader.PayloadLength) < PAYLOAD_HEADER_LENGTH) {
+
 			return nil, errors.Wrap(ERR_INVALID_SYNTAX, "incorrect payload length in payload header")
 		}
 		var payload Payload
