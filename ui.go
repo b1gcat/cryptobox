@@ -12,7 +12,9 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func ui() {
+func ui(parent fyne.Window) {
+	defer parent.Close()
+
 	w := appWin.NewWindow(AppName)
 	//样式
 	w.Resize(fyne.Size{Width: 200, Height: 250})

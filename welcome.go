@@ -22,7 +22,6 @@ func runWelcome() {
 		login.Disable()
 		defer login.Enable()
 
-		w.Hide()
 		ui()
 	})
 

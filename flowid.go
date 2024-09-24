@@ -87,7 +87,7 @@ func flowClassify(_ fyne.Window) {
 		if changed {
 			pktBtn.Hide()
 			dev.Show()
-			pktPath = "any"
+			pktPath = dev.Text
 		} else {
 			dev.Hide()
 			pktBtn.Show()
@@ -104,7 +104,7 @@ func flowClassify(_ fyne.Window) {
 		analysis.Disable()
 		defer analysis.Enable()
 
-		if err := handleFlowClassify(pktPath, func(r *flowResult) {
+		if err := handleFlowClassify(capLive.Checked, pktPath, func(r *flowResult) {
 			result.Append(fmt.Sprintf("[+] %v: %v/%v<->%v\n",
 				r.Version, r.Cybersuite, r.Src, r.Dst))
 		}); err != nil {
@@ -125,17 +125,17 @@ type flowResult struct {
 	Src, Dst   string
 }
 
-func handleFlowClassify(pcapFile string, cb func(*flowResult)) error {
+func handleFlowClassify(live bool, pcapFile string, cb func(*flowResult)) error {
 	var handle *pcap.Handle
 	var err error
 
-	if _, err = os.Stat(pcapFile); err != nil {
+	if live {
 		handle, err = pcap.OpenLive(pcapFile, 1600, true, pcap.BlockForever)
 	} else {
 		handle, err = pcap.OpenOffline(pcapFile)
 	}
 	if err != nil {
-		return err
+		return fmt.Errorf("%v:%v", pcapFile, err.Error())
 	}
 
 	packetSource := gopacket.NewPacketSource(handle, handle.LinkType()).Packets()
