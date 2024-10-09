@@ -87,7 +87,6 @@ func flowClassify(_ fyne.Window) {
 		if changed {
 			pktBtn.Hide()
 			dev.Show()
-			pktPath = dev.Text
 		} else {
 			dev.Hide()
 			pktBtn.Show()
@@ -104,7 +103,12 @@ func flowClassify(_ fyne.Window) {
 		analysis.Disable()
 		defer analysis.Enable()
 
+		if capLive.Checked {
+			pktPath = dev.Text
+		}
+
 		if err := handleFlowClassify(capLive.Checked, pktPath, func(r *flowResult) {
+
 			result.Append(fmt.Sprintf("[+] %v: %v/%v<->%v\n",
 				r.Version, r.Cybersuite, r.Src, r.Dst))
 		}); err != nil {

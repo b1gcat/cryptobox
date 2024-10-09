@@ -21,8 +21,8 @@ func runWelcome() {
 
 		login.Disable()
 		defer login.Enable()
-
-		ui()
+		w.Hide()
+		ui(w)
 	})
 
 	content := container.NewVBox(
